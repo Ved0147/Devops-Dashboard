@@ -1,0 +1,22 @@
+# Node
+Dashboard-Frontend/node_modules/
+Dashboard-Frontend/dist/
+
+# .NET
+**/bin/
+**/obj/
+.vs/
+
+# User files
+*.user
+*.suo
+
+# Logs
+*.log
+
+# Environment
+.env
+
+# OS
+Thumbs.db
+.DS_Store

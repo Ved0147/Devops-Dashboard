@@ -1,8 +1,14 @@
+import { useEffect, useState } from 'react';
+
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 
 import { DashboardContent } from 'src/layouts/dashboard';
 import { _posts, _tasks, _traffic, _timeline } from 'src/_mock';
+
+import { getDashboardOverview } from 'src/services/dashboardService';
+
+import { DashboardOverview } from 'src/types/dashboard';
 
 import { AnalyticsNews } from '../analytics-news';
 import { AnalyticsTasks } from '../analytics-tasks';
@@ -17,6 +23,20 @@ import { AnalyticsConversionRates } from '../analytics-conversion-rates';
 // ----------------------------------------------------------------------
 
 export function OverviewAnalyticsView() {
+  const [dashboardData, setDashboardData] = useState<DashboardOverview | null>(null);
+
+useEffect(() => {
+  const loadDashboard = async () => {
+    try {
+      const data = await getDashboardOverview();
+      setDashboardData(data);
+    } catch (error) {
+      console.error('Failed to load dashboard data', error);
+    }
+  };
+
+  loadDashboard();
+}, []);
   return (
     <DashboardContent maxWidth="xl">
       <Typography variant="h4" sx={{ mb: { xs: 3, md: 5 } }}>
@@ -26,9 +46,9 @@ export function OverviewAnalyticsView() {
       <Grid container spacing={3}>
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="Weekly sales"
+            title="Total Deployments"
             percent={2.6}
-            total={714000}
+            total={dashboardData?.totalDeployments ?? 0}
             icon={<img alt="Weekly sales" src="/assets/icons/glass/ic-glass-bag.svg" />}
             chart={{
               categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'],
@@ -39,9 +59,9 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="New users"
+            title="Successful Deployments"
             percent={-0.1}
-            total={1352831}
+            total={dashboardData?.successfulDeployments ?? 0}
             color="secondary"
             icon={<img alt="New users" src="/assets/icons/glass/ic-glass-users.svg" />}
             chart={{
@@ -53,9 +73,9 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="Purchase orders"
+            title="Visitors Today"
             percent={2.8}
-            total={1723315}
+            total={dashboardData?.visitorsToday ?? 0}
             color="warning"
             icon={<img alt="Purchase orders" src="/assets/icons/glass/ic-glass-buy.svg" />}
             chart={{
@@ -67,9 +87,9 @@ export function OverviewAnalyticsView() {
 
         <Grid size={{ xs: 12, sm: 6, md: 3 }}>
           <AnalyticsWidgetSummary
-            title="Messages"
+            title="Healthy Services"
             percent={3.6}
-            total={234}
+            total={dashboardData?.healthyServices ?? 0}
             color="error"
             icon={<img alt="Messages" src="/assets/icons/glass/ic-glass-message.svg" />}
             chart={{
